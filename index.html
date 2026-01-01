@@ -3,7 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <title>月球绕地运行可视化</title>
-    <link rel="stylesheet" href="style.css">
+    <style>
+        body { margin: 0; background-color: #000; overflow: hidden; font-family: sans-serif; }
+        #info { position: absolute; top: 20px; width: 100%; text-align: center; color: white; pointer-events: none; text-shadow: 1px 1px 2px black; }
+    </style>
 </head>
 <body>
     <div id="info">月球绕地球运动可视化</div>
@@ -30,23 +33,15 @@
         scene.add(sunLight);
         scene.add(new THREE.AmbientLight(0x333333));
 
-        // 3. 创建地球
+        // 3. 创建地球 (蓝色)
         const earthGeometry = new THREE.SphereGeometry(1, 32, 32);
-        const earthMaterial = new THREE.MeshPhongMaterial({
-            map: new THREE.TextureLoader().load('https://unpkg.com/three-earth-assets/textures/earthmap1k.jpg'),
-            bumpMap: new THREE.TextureLoader().load('https://unpkg.com/three-earth-assets/textures/earthbump1k.jpg'),
-            bumpScale: 0.05,
-        });
+        const earthMaterial = new THREE.MeshPhongMaterial({ color: 0x2233ff });
         const earth = new THREE.Mesh(earthGeometry, earthMaterial);
         scene.add(earth);
 
-        // 4. 创建月球
+        // 4. 创建月球 (灰色)
         const moonGeometry = new THREE.SphereGeometry(0.27, 32, 32);
-        const moonMaterial = new THREE.MeshPhongMaterial({
-            map: new THREE.TextureLoader().load('https://unpkg.com/three-earth-assets/textures/moonmap1k.jpg'),
-            bumpMap: new THREE.TextureLoader().load('https://unpkg.com/three-earth-assets/textures/moonbump1k.jpg'),
-            bumpScale: 0.05,
-        });
+        const moonMaterial = new THREE.MeshPhongMaterial({ color: 0x888888 });
         const moon = new THREE.Mesh(moonGeometry, moonMaterial);
         scene.add(moon);
 
@@ -55,26 +50,18 @@
 
         // 6. 动画循环
         let angle = 0;
-        const radius = 3; // 月球轨道半径
+        const radius = 3; 
 
         function animate() {
             requestAnimationFrame(animate);
-
-            // 地球自转
             earth.rotation.y += 0.005;
-
-            // 月球公转
             angle += 0.01;
             moon.position.x = Math.cos(angle) * radius;
             moon.position.z = Math.sin(angle) * radius;
-            
-            // 月球自转 (潮汐锁定，使其始终一面朝向地球)
             moon.rotation.y = -angle;
-
             renderer.render(scene, camera);
         }
 
-        // 窗口自适应
         window.addEventListener('resize', () => {
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
@@ -85,21 +72,3 @@
     </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
